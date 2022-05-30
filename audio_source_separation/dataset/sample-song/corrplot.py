@@ -35,35 +35,49 @@ def plot_correlation(src_name, tgt_name):
     # plt.show()
     X = mix_sources([SOURCE_FILE, TARGET_FILE])
     fig = plt.figure()
-    plt.subplot(4, 1, 1)
-    plt.suptitle('Correlation for ' + src_name)
+    plt.subplot(3, 1, 1)
+    for s in [SOURCE_FILE]:
+        plt.plot(s)
+    plt.title("Time Domain Envelope for Source File")
+    plt.tight_layout()
+    plt.subplot(3, 1, 2)
+    for s in [TARGET_FILE]:
+        plt.plot(s, color="orangered")
+    plt.title("Time Domain Envelope for Target File")
+    plt.subplot(3, 1, 3)
+    plt.suptitle('Correlation for ' + src_name[:-4] + ' from ' + tgt_name[:-4])
     plt.scatter(x, y)
     plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), color='red')
     plt.xlabel('x axis')
     plt.ylabel('y axis')
     plt.title("correlation: " + str(correlation))
-    plt.subplot(4, 1, 2)
-    for s in X:
-        plt.plot(s, alpha=0.8)
-    plt.title("Time Domain Envelope")
-    plt.subplot(4, 1, 3)
+    plt.tight_layout()
+    plt.savefig('../../egs/bss-example/mnmf/Outputs/CorrPLotTime/'+src_name[:-4] + ' from ' + tgt_name[:-4]+'.png')
+    plt.close()
+    #plt.show()
+    plt.subplot(2, 1, 1)
+    plt.suptitle("Frequency Domain Comparision of " + src_name[:-4] + ' and ' + tgt_name[:-4])
     fft_spectrum = np.fft.rfft(SOURCE_FILE)
     freq = np.fft.rfftfreq(SOURCE_FILE.size, d=1 / sampling_rate)
     fft_spectrum_abs = np.abs(fft_spectrum)
-    plt.plot(freq, fft_spectrum_abs, color='orangered')
+    plt.plot(freq, fft_spectrum_abs)
     plt.xlim([0, 5000])
     plt.xlabel("frequency, Hz")
     plt.ylabel("Amplitude, units")
-    plt.subplot(4, 1, 4)
+    plt.title("Source File")
+    plt.subplot(2, 1, 2)
     fft_spectrum = np.fft.rfft(TARGET_FILE)
     freq = np.fft.rfftfreq(TARGET_FILE.size, d=1. / sampling_rate2)
     fft_spectrum_abs = np.abs(fft_spectrum)
     plt.plot(freq, fft_spectrum_abs, color='orangered', )
     plt.xlim([0, 5000])
+    plt.title("Target File")
     plt.xlabel("frequency, Hz")
     plt.ylabel("Amplitude, units")
-    fig.tight_layout()
-    plt.show()
+    plt.tight_layout()
+    plt.savefig('../../egs/bss-example/mnmf/Outputs/CorrPLotFreq/' + src_name[:-4] + ' from ' + tgt_name[:-4] + '.png')
+    #plt.show()
+    plt.close()
 
 def mix_sources(mixtures, apply_noise=False):
     for i in range(len(mixtures)):
@@ -81,6 +95,33 @@ def mix_sources(mixtures, apply_noise=False):
     return X
 
 if __name__ == '__main__':
+    src = "Bss_SomeoneLikeYou_piano.wav"
+    tgt = "output_Bss_SomeoneLikeYou_Mix1.wav_0.wav"
+    plot_correlation(src, tgt)
+    src = "Bss_SomeoneLikeYou_Voice.wav"
+    tgt = "output_Bss_SomeoneLikeYou_Mix1.wav_1.wav"
+    plot_correlation(src, tgt)
+    src = "Bss_numb_Vocal.wav"
+    tgt = "output_Bss_numb_mix1.wav_1.wav"
+    plot_correlation(src, tgt)
     src = "Bss_numb_piano.wav"
     tgt = "output_Bss_numb_mix1.wav_0.wav"
+    plot_correlation(src, tgt)
+    src = "StrTru1stringString.wav"
+    tgt = "output_StrTru1Mix1.wav_1.wav"
+    plot_correlation(src, tgt)
+    src = "StrTru1stringTrumpet.wav"
+    tgt = "output_StrTru1Mix1.wav_0.wav"
+    plot_correlation(src, tgt)
+    src = "StrTru1stringTrumpet.wav"
+    tgt = "output_StrTruLapBassMix2.wav_3.wav"
+    plot_correlation(src, tgt)
+    src = "StrTruLapBassplucks.wav"
+    tgt = "output_StrTruLapBassMix2.wav_2.wav"
+    plot_correlation(src, tgt)
+    src = "source2.wav"
+    tgt = "output_mixboth1_2_0.wav"
+    plot_correlation(src, tgt)
+    src = "source1.wav"
+    tgt = "output_mixboth1_2_1.wav"
     plot_correlation(src, tgt)
